@@ -1,0 +1,42 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# XcodeGen / CocoaPods
+MotifGrid.xcodeproj/
+MotifGrid.xcworkspace/
+Pods/
+Podfile.lock
+
+# SwiftPM
+.build/
+.swiftpm/
+Package.resolved
+
+# Model artifacts (large; fetched locally)
+Resources/Models/*
+!Resources/Models/.gitkeep
+!Resources/Models/README.md
+!Resources/Models/model-assets.json
+
+# Generated manifests / receipts
+Artifacts/
+TestResults/
+
+# macOS
+.DS_Store
+
+# Worktrees
+.worktrees/
+
+# Python
+__pycache__/
+*.py[cod]

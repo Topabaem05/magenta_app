@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "id": "musiccoca-sentencepiece",
+      "relativePath": "Prompt/spm.model",
+      "byteCount": 517448,
+      "sha256": "ff325a99b61ba5726cf6437cde6eefbb633dbaa363a684f7a97ed99b55202cca",
+      "role": "tokenizerModel",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "google/magenta-realtime-2@7803d987f43f7142cfc7d68ba3361c5f83023931"
+    },
+    {
+      "id": "musiccoca-text-encoder",
+      "relativePath": "Prompt/text_encoder.tflite",
+      "byteCount": 418674324,
+      "sha256": "e1222e3418cbe8cc2623939571bae8e9ab6f0d511404b0d83da69f4e6e11b272",
+      "role": "promptEncoder",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "google/magenta-realtime-2@7803d987f43f7142cfc7d68ba3361c5f83023931"
+    },
+    {
+      "id": "musiccoca-vector-quantizer",
+      "relativePath": "Prompt/pretrained_vector_quantizer.tflite",
+      "byteCount": 72422108,
+      "sha256": "7a8a19e2119ad405818eae84a331a970f1a582b3389d4bfd27814f75b455a444",
+      "role": "vectorQuantizer",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "google/magenta-realtime-2@7803d987f43f7142cfc7d68ba3361c5f83023931"
+    },
+    {
+      "id": "mrt2-temporal-carry-weights",
+      "relativePath": "Generation/MRT2TemporalBodyCarry.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+      "sha256": "02657e24a19402fed8210e431e1a67baa0c8196d4d23f0c78dd931668a9c5a64",
+      "role": "temporalModelWeights",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "mattmireles/magenta-realtime-2-iphone corrected generation"
+    },
+    {
+      "id": "mrt2-depth-rollout-weights",
+      "relativePath": "Generation/MRT2DepthBodyRollout.f16.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+      "sha256": "6c69ebae8cd7401fcb9927e3ff558d5b240cebdae2e29972d731ee08bd81c4f8",
+      "role": "depthModelWeights",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "mattmireles/magenta-realtime-2-iphone corrected generation"
+    },
+    {
+      "id": "spectrostream-decoder-weights",
+      "relativePath": "Generation/SpectroStreamDecoder.f16.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+      "sha256": "ceb3ed7d5b0286e69a937a17db253ce5a95e6bfa5560a187eb4c17de9e080f5d",
+      "role": "decoderModelWeights",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "mattmireles/magenta-realtime-2-iphone corrected generation"
+    },
+    {
+      "id": "spectrostream-rvq-codebooks",
+      "relativePath": "Generation/SpectroStreamRVQCodebooks.f32.bin",
+      "byteCount": 12582912,
+      "sha256": "4e236269d4194ffe2d7463c483a1a36f4aff7d619c34f8e8bfe451c7af92d496",
+      "role": "codebook",
+      "license": "CC-BY-4.0",
+      "sourceRevision": "mattmireles/magenta-realtime-2-iphone corrected generation"
+    }
+  ],
+  "certifications": {
+    "tokenizerParityReceipt": null,
+    "conditioningParityReceipt": null,
+    "tensorSchemaReceipt": null,
+    "sustainedRuntimeReceipt": null
+  }
+}
