@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 forbidden_directories = ["Pods", "MotifGrid.xcodeproj", "MotifGrid.xcworkspace", ".build"]
-present = [name for name in forbidden_directories if (ROOT / name).exists()]
+tracked = subprocess.run(
+    ["git", "ls-files"],
+    cwd=ROOT,
+    capture_output=True,
+    text=True,
+    check=True,
+).stdout.splitlines()
+present = [
+    name
+    for name in forbidden_directories
+    if any(path == name or path.startswith(f"{name}/") for path in tracked)
+]
 if present:
     print("Generated directories must not be committed:", ", ".join(present))
     sys.exit(1)
