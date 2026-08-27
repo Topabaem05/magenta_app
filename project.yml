@@ -27,6 +27,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.topabaem.motifgrid.core
         PRODUCT_NAME: MotifGridCore
         DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
         SKIP_INSTALL: YES
   MotifGrid:
     type: application
@@ -50,6 +51,7 @@ targets:
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
     dependencies:
       - target: MotifGridCore
+        embed: true
       - sdk: AVFoundation.framework
       - sdk: Accelerate.framework
       - sdk: CoreML.framework

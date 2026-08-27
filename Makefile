@@ -1,17 +1,12 @@
 SHELL := /bin/bash
 
-.PHONY: bootstrap generate pods test lint format validate-assets validate-repo verify clean
+.PHONY: bootstrap generate test lint format validate-assets validate-repo verify clean
 
-bootstrap: generate pods
+bootstrap: generate
 
 generate:
 	command -v xcodegen >/dev/null || { echo "Install XcodeGen: brew install xcodegen"; exit 1; }
 	xcodegen generate
-
-pods:
-	command -v bundle >/dev/null || { echo "Install Bundler first"; exit 1; }
-	bundle install
-	bundle exec pod install
 
 test:
 	swift test
@@ -33,4 +28,4 @@ verify: test lint validate-repo
 	python3 -m unittest discover -s tests -p 'test_*.py' -v
 
 clean:
-	rm -rf .build build DerivedData MotifGrid.xcodeproj MotifGrid.xcworkspace Pods
+	rm -rf .build build DerivedData MotifGrid.xcodeproj

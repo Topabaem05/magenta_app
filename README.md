@@ -1,108 +1,70 @@
 # MotifGrid
 
-MotifGrid is a native iOS and iPadOS music studio for fully on-device, text-guided instrumental music generation. Its interaction model combines a compact GarageBand/Logic-style timeline with a chat-like prompt composer, a playable multi-touch piano, and an adaptive launchpad.
+[![CI](https://github.com/Topabaem05/magenta_app/actions/workflows/ci.yml/badge.svg?branch=feature%2Fnative-mrt2-demo)](https://github.com/Topabaem05/magenta_app/actions/workflows/ci.yml)
 
-The product name and bundle identifier are independent from Google and Magenta:
+MotifGrid is a native SwiftUI iOS/iPadOS prototype inspired by the interaction patterns in
+[Magenta RealTime 2](https://magenta.withgoogle.com/mrt2#apps-plugins). It recreates the three
+reference workspaces supplied for this project—MRT2, Collider, and Jam—in a buildable app.
 
-- Product: `MotifGrid`
-- Bundle identifier: `com.topabaem.motifgrid`
-- Platforms: iOS/iPadOS 18 or later
-- Language/UI: Swift 6, SwiftUI, and a narrow UIKit bridge for the low-latency piano surface
+## Current prototype
 
-## Implemented studio surface
+- MRT2 prompt mixer with editable prompts, strength controls, memory-bank controls, transport,
+  and a playable keyboard.
+- Collider with draggable prompt nodes and listener; blend weights use normalized inverse-square
+  distance, matching the open-source MRT2 example.
+- Jam with Solo/Jam modes, wrapping prompt presets, strength controls, transport, and keyboard.
+- Deterministic local oscillator audio so the prototype is interactive without model weights.
+- Shared Swift package tests for prompt blending, preset navigation, transport, and MIDI pitch.
 
-- HIG-oriented adaptive navigation for iPhone and iPad.
-- Track creation, selection, removal, mute, and solo.
-- Timeline playback with region start times, track gain/pan, looping, and transport controls.
-- Chat-like prompt history and multiline text input.
-- Prompt generation with optional take recording and automatic timeline-region insertion.
-- Native multi-touch MIDI piano with slide/glissando handling.
-- Keyboard/Pads instrument carousel.
-- Memory-, width-, thermal-, and voice-aware `2×2`, `3×3`, or `4×4` launchpad pages.
-- Sixteen persistent pad assignments; smaller grids expose the remaining cells through accessible paging rather than hiding them.
-- Atomic CAF take recording and local project persistence under Application Support.
-- Deterministic, explicitly non-Magenta demo synthesis for end-to-end UI, audio, recording, track, and launchpad development.
-- App-local model status, privacy disclosure, attribution, and third-party notices.
+The app is deliberately labeled **LOCAL DEMO**. Google's MRT2 runtime currently targets Apple
+Silicon Macs through JAX/MLX/C++; the large model weights and a production iOS inference engine are
+not bundled here. `StudioModel` and `LocalSynthesizer` keep the UI and playback boundary explicit so
+an iOS-compatible generator can replace the demo backend later.
 
-## On-device model boundary
+## Build locally
 
-The production design is entirely local:
-
-1. Pure-Swift SentencePiece tokenization.
-2. MusicCoCa `text_encoder.tflite` execution.
-3. MusicCoCa vector quantization.
-4. Certified MusicCoCa-to-MRT2 conditioning projection.
-5. Corrected MRT2 Small Core ML temporal, depth, and SpectroStream stages.
-6. CPU RVQ gather, inverse STFT/overlap-add, and AVAudioEngine delivery.
-
-No prompt or generated audio is sent to an inference server. App source validation rejects `URLSession`, `NWConnection`, and `Network`-framework inference paths.
-
-### Production gates
-
-The repository deliberately does **not** fabricate the two missing certified runtime components:
-
-- a parity-validated on-device MusicCoCa-to-MRT2 conditioning projector;
-- the complete corrected host-owned-cache frame loop, RVQ gather, inverse STFT, and sustained-device receipt for the exact shipping artifacts.
-
-`MusicCoCaPromptEncoder` and `MRT2GeneratorAdapter` validate local assets, exact tensor contracts, and 64-character content-addressed receipt digests. Production mode activates only when every required model role and every certification receipt is present. Otherwise MotifGrid starts in clearly labeled local demo mode.
-
-The production backend also refuses to start on an unrecognized device or on hardware with less than 6 GiB of physical memory. A supported A14-class device remains in Render mode until the sustained Live benchmark passes; the deterministic demo backend remains available independently of this production-model gate.
-
-## Requirements
-
-- macOS with Xcode supporting Swift 6
-- XcodeGen
-- Bundler and CocoaPods 1.16.2
-- `TensorFlowLiteSwift ~> 2.17`
-- `swift-format`
-
-## Bootstrap on macOS
+Requirements: Xcode with the iOS 18 SDK and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
 ```bash
-brew install xcodegen swift-format
-bundle install
+brew install xcodegen
 xcodegen generate
-bundle exec pod install
-open MotifGrid.xcworkspace
+open MotifGrid.xcodeproj
 ```
 
-## Verification
+Select the `MotifGrid` scheme and a landscape iPhone or iPad simulator, then Build & Run.
 
-Portable checks run on Linux or macOS:
-
-```bash
-make verify
-```
-
-Equivalent commands:
+## Verify
 
 ```bash
 swift test
 python3 -m unittest discover -s tests -p 'test_*.py' -v
-swift-format lint --recursive --strict Sources Tests
 python3 scripts/check_scaffold.py
 python3 scripts/check_repository.py
 ```
 
-Apple-only SwiftUI, AVFAudio, Core ML, and TensorFlow Lite sources are generated and built by the macOS GitHub Actions job. Model weights, generated Xcode projects, CocoaPods output, and build products are prohibited from source control.
+GitHub Actions runs the portable tests on Linux and generates/builds the iOS project on macOS.
 
-## Model assets
+## Xcode Cloud
 
-See:
+1. Open the generated project in Xcode and sign in to the Apple Developer account.
+2. Set the MotifGrid target's Team and confirm the bundle identifier is available.
+3. Choose **Product → Xcode Cloud → Create Workflow**.
+4. Connect `Topabaem05/magenta_app`, select the `MotifGrid` scheme, and use `main` (or this feature
+   branch while testing) as the start condition.
+5. Keep `ci_scripts/ci_post_clone.sh`; Xcode Cloud runs it after checkout to install XcodeGen,
+   generate the project, and validate the repository.
+6. Add TestFlight distribution to the Archive action after App Store Connect has an app record.
 
-- `Resources/Models/README.md`
-- `Resources/Models/model-assets.json`
-- `docs/model-integration.md`
-- `docs/device-qualification.md`
+Recommended workflow: pull request changes run Build + Test; pushes to `main` run Build + Test +
+Archive; tagged releases distribute the archive to TestFlight.
 
-The manifest pins known upstream asset sizes and SHA-256 digests. Hash success alone is insufficient: tokenizer, conditioning, tensor-schema, and sustained-runtime receipts must also be valid 64-character digests and match the current shipping build.
+## Reference and licensing
 
-## Licensing
+The UI was reconstructed from supplied screenshots using the layout-analysis approach described by
+[screenshot-to-code](https://github.com/abi/screenshot-to-code), then implemented natively in
+SwiftUI. The project does not copy its generated web stack.
 
-- MotifGrid application code: proprietary by default; see `LICENSE`.
-- Magenta RealTime 2 reference code: Apache License 2.0.
-- Magenta RealTime 2 model weights and numerical derivatives: CC BY 4.0.
-- TensorFlow Lite and SentencePiece: Apache License 2.0.
-
-Complete attribution and modification notes are in `THIRD_PARTY_NOTICES.md`. MotifGrid is independent and is not affiliated with or endorsed by Google.
-Full Apache 2.0 and CC BY 4.0 legal texts are bundled under `Resources/Licenses` and displayed inside the app information screen.
+Magenta reference logic comes from
+[magenta/magenta-realtime](https://github.com/magenta/magenta-realtime). See
+`THIRD_PARTY_NOTICES.md` for attribution. MotifGrid is independent and is not affiliated with or
+endorsed by Google.
