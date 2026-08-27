@@ -1,5 +1,7 @@
 # MotifGrid
 
+[![CI](https://github.com/Topabaem05/magenta_app/actions/workflows/ci.yml/badge.svg?branch=feature%2Fnative-mrt2-demo)](https://github.com/Topabaem05/magenta_app/actions/workflows/ci.yml)
+
 MotifGrid is a native SwiftUI iOS/iPadOS prototype inspired by the interaction patterns in
 [Magenta RealTime 2](https://magenta.withgoogle.com/mrt2#apps-plugins). It recreates the three
 reference workspaces supplied for this project—MRT2, Collider, and Jam—in a buildable app.
