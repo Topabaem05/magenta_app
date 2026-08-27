@@ -51,6 +51,7 @@ targets:
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
     dependencies:
       - target: MotifGridCore
+        embed: true
       - sdk: AVFoundation.framework
       - sdk: Accelerate.framework
       - sdk: CoreML.framework
