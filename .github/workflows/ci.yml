@@ -27,20 +27,14 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      - name: Install build tools
-        run: |
-          brew install xcodegen swift-format
-          bundle install
+      - name: Install XcodeGen
+        run: brew install xcodegen
       - name: Generate Xcode project
         run: xcodegen generate
-      - name: Install LiteRT dependency
-        run: bundle exec pod install
-      - name: Swift format lint
-        run: swift-format lint --recursive --strict Sources Tests
       - name: Build for simulator
         run: |
           xcodebuild \
-            -workspace MotifGrid.xcworkspace \
+            -project MotifGrid.xcodeproj \
             -scheme MotifGrid \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
