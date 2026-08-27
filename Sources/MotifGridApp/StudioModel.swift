@@ -43,6 +43,19 @@ final class StudioModel {
 
   let synth = LocalSynthesizer()
 
+  init(arguments: [String] = ProcessInfo.processInfo.arguments) {
+    guard let marker = arguments.firstIndex(of: "--workspace"),
+      arguments.indices.contains(marker + 1)
+    else { return }
+
+    let requested = arguments[marker + 1]
+    if let workspace = StudioWorkspace.allCases.first(where: {
+      $0.rawValue.caseInsensitiveCompare(requested) == .orderedSame
+    }) {
+      session.workspace = workspace
+    }
+  }
+
   var workspace: StudioWorkspace {
     get { session.workspace }
     set { session.workspace = newValue }
