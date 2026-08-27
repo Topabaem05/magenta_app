@@ -92,7 +92,8 @@ struct VerticalSlider: View {
       .gesture(
         DragGesture(minimumDistance: 0)
           .onChanged { gesture in
-            value = min(1, max(0, 1 - (gesture.location.y - 11) / usable))
+            let normalized = 1 - Double((gesture.location.y - 11) / usable)
+            value = min(1, max(0, normalized))
           }
       )
     }
