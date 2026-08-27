@@ -12,7 +12,6 @@ final class LocalSynthesizer {
 
   func noteOn(_ note: Int) {
     noteOff(note)
-    ensureEngineIsRunning()
 
     let format = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1)!
     let frameCount = AVAudioFrameCount(format.sampleRate * 1.5)
@@ -39,6 +38,7 @@ final class LocalSynthesizer {
     let player = AVAudioPlayerNode()
     engine.attach(player)
     engine.connect(player, to: engine.mainMixerNode, format: format)
+    ensureEngineIsRunning()
     player.scheduleBuffer(buffer, at: nil, options: .loops)
     player.play()
     voices[note] = player
@@ -65,7 +65,6 @@ final class LocalSynthesizer {
     try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
     try? session.setPreferredSampleRate(48_000)
     try? session.setActive(true)
-    ensureEngineIsRunning()
   }
 
   private func ensureEngineIsRunning() {
