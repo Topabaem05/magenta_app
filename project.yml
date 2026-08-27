@@ -27,6 +27,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.topabaem.motifgrid.core
         PRODUCT_NAME: MotifGridCore
         DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
         SKIP_INSTALL: YES
   MotifGrid:
     type: application
