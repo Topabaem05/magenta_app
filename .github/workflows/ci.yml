@@ -40,6 +40,8 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build
       - name: Capture workspace screenshots
+        continue-on-error: true
+        timeout-minutes: 5
         run: |
           set -euo pipefail
           DEVICE_ID="$(xcrun simctl list devices available -j | python3 -c '
@@ -65,6 +67,8 @@ jobs:
             xcrun simctl io "$DEVICE_ID" screenshot "screenshots/$WORKSPACE.png"
           done
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: workspace-screenshots
           path: screenshots/*.png
+          if-no-files-found: ignore
