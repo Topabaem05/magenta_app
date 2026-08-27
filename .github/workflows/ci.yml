@@ -60,15 +60,19 @@ jobs:
           APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*Debug-iphonesimulator/MotifGrid.app' -print -quit)"
           xcrun simctl install "$DEVICE_ID" "$APP_PATH"
           mkdir -p screenshots
-          for WORKSPACE in MRT2 Collider Jam; do
-            xcrun simctl launch --terminate-running-process "$DEVICE_ID" \
-              com.topabaem.motifgrid --workspace "$WORKSPACE"
-            sleep 2
-            xcrun simctl io "$DEVICE_ID" screenshot "screenshots/$WORKSPACE.png"
-          done
+          WORKSPACE=MRT2
+          xcrun simctl launch --terminate-running-process "$DEVICE_ID" \
+            com.topabaem.motifgrid --workspace "$WORKSPACE"
+          sleep 5
+          xcrun simctl io "$DEVICE_ID" screenshot "screenshots/$WORKSPACE.png"
+          xcrun simctl spawn "$DEVICE_ID" log show \
+            --style compact \
+            --last 2m \
+            --predicate 'process == "MotifGrid" OR eventMessage CONTAINS[c] "MotifGrid"' \
+            > screenshots/MotifGrid.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: workspace-screenshots
-          path: screenshots/*.png
+          path: screenshots/*
           if-no-files-found: ignore
