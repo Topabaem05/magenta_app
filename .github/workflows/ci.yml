@@ -39,3 +39,32 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
             build
+      - name: Capture workspace screenshots
+        run: |
+          set -euo pipefail
+          DEVICE_ID="$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          candidates = [
+              item
+              for runtime in devices.values()
+              for item in runtime
+              if item.get("isAvailable") and item["name"].startswith("iPhone")
+          ]
+          print(candidates[-1]["udid"])
+          ')"
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*Debug-iphonesimulator/MotifGrid.app' -print -quit)"
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+          mkdir -p screenshots
+          for WORKSPACE in MRT2 Collider Jam; do
+            xcrun simctl launch --terminate-running-process "$DEVICE_ID" \
+              com.topabaem.motifgrid --workspace "$WORKSPACE"
+            sleep 2
+            xcrun simctl io "$DEVICE_ID" screenshot "screenshots/$WORKSPACE.png"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: workspace-screenshots
+          path: screenshots/*.png
